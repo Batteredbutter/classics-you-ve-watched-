@@ -168,17 +168,11 @@
         }
         
         .anime-title {
-            font-size: 0.75rem;
+            font-size: 1.0rem;
             font-weight: 600;
-            line-height: 1.2;
+            line-height: 1.3;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
-        }
-        
-        .anime-type {
-            font-size: 0.65rem;
-            opacity: 0.8;
-            margin-top: 5px;
-            font-style: italic;
+            padding: 0 5px;
         }
         
         footer {
@@ -245,9 +239,8 @@
         <header>
             <h1>Anime I've Watched</h1>
             <p class="subtitle">Select how many anime from each year starting in 2006 you’ve watched.</p>
-            <p class="subtitle"></p>Each year features a curated list of ten must-see titles.</p>
-                Discover how many classics you've watched!
-            </p>
+            <p class="subtitle">Each year features a curated list of ten must-see titles.</p>
+            <p class="subtitle">Discover how many classics you've watched!</p>
         </header>
         
         <div class="controls">
@@ -255,13 +248,13 @@
             <button id="deselectAllBtn" class="btn">Deselect All Anime</button>
             <button id="saveImageBtn" class="btn btn-save">Save as Image</button>
         </div>
-        
+         
         <div class="grid-container" id="gridContainer">
             <!-- Anime grid will be generated here -->
         </div>
         
         <footer>
-            <p>Created with ❤️ for anime fans and Anillist Users</p>
+            <p>Created with ❤️ for anime fans and AniList Users</p>
         </footer>
     </div>
 
@@ -272,79 +265,67 @@
             const deselectAllBtn = document.getElementById('deselectAllBtn');
             const saveImageBtn = document.getElementById('saveImageBtn');
             
-            // Sample anime data (2006-2024)
+            // Anime data with numbered titles only (2006-2024)
         const animeData = {
             2006: [
-                { title: "Death Note", type: "MADHOUSE" },
-                { title: "NANA", type: "MADHOUSE" },
-                { title: "Welcome to the N-H-K", type: "GONZO" },
-                { title: "Code Geass", type: "Sunrise" },
-                { title: "Haruhi Suzumiya", type: "Kyoto Animation" },
-                { title: "Higurashi", type: "Studio DEEN" },
-                { title: "7", type: "7" },
-                { title: "8", type: "8" },
-                { title: "9", type: "9" },
-                { title: "10", type: "10" }
+                { title: "Death Note" },
+                { title: "NANA" },
+                { title: "Welcome to the N-H-K" },
+                { title: "Code Geass" },
+                { title: "Haruhi Suzumiya" },
+                { title: "Higurashi" },
+                { title: "7" },
+                { title: "8" },
+                { title: "9" },
+                { title: "10" }
             ],
             2007: [
-                { title: "1", type: "1" },
-                { title: "2", type: "2" },
-                { title: "3", type: "3" },
-                { title: "4", type: "4" },
-                { title: "5", type: "5" },
-                { title: "6", type: "6" },
-                { title: "7", type: "7" },
-                { title: "8", type: "8" },
-                { title: "9", type: "9" },
-                { title: "10", type: "10" }
+                { title: "1" },
+                { title: "2" },
+                { title: "3" },
+                { title: "4" },
+                { title: "5" },
+                { title: "6" },
+                { title: "7" },
+                { title: "8" },
+                { title: "9" },
+                { title: "10" }
             ],
             2008: [
-                { title: "1", type: "1" },
-                { title: "2", type: "2" },
-                { title: "3", type: "3" },
-                { title: "4", type: "4" },
-                { title: "5", type: "5" },
-                { title: "6", type: "6" },
-                { title: "7", type: "7" },
-                { title: "8", type: "8" },
-                { title: "9", type: "9" },
-                { title: "10", type: "10" }
+                { title: "1" },
+                { title: "2" },
+                { title: "3" },
+                { title: "4" },
+                { title: "5" },
+                { title: "6" },
+                { title: "7" },
+                { title: "8" },
+                { title: "9" },
+                { title: "10" }
             ],
             2009: [
-                { title: "1", type: "1" },
-                { title: "2", type: "2" },
-                { title: "3", type: "3" },
-                { title: "4", type: "4" },
-                { title: "5", type: "5" },
-                { title: "6", type: "6" },
-                { title: "7", type: "7" },
-                { title: "8", type: "8" },
-                { title: "9", type: "9" },
-                { title: "10", type: "10" }
+                { title: "1" },
+                { title: "2" },
+                { title: "3" },
+                { title: "4" },
+                { title: "5" },
+                { title: "6" },
+                { title: "7" },
+                { title: "8" },
+                { title: "9" },
+                { title: "10" }
             ],
             2010: [
-                { title: "1", type: "1" },
-                { title: "2", type: "2" },
-                { title: "3", type: "3" },
-                { title: "4", type: "4" },
-                { title: "5", type: "5" },
-                { title: "6", type: "6" },
-                { title: "7", type: "7" },
-                { title: "8", type: "8" },
-                { title: "9", type: "9" },
-                { title: "10", type: "10" }
-            ],
-            2011: [
-                { title: "1", type: "1" },
-                { title: "2", type: "2" },
-                { title: "3", type: "3" },
-                { title: "4", type: "4" },
-                { title: "5", type: "5" },
-                { title: "6", type: "6" },
-                { title: "7", type: "7" },
-                { title: "8", type: "8" },
-                { title: "9", type: "9" },
-                { title: "10", type: "10" }
+                { title: "1" },
+                { title: "2" },
+                { title: "3" },
+                { title: "4" },
+                { title: "5" },
+                { title: "6" },
+                { title: "7" },
+                { title: "8" },
+                { title: "9" },
+                { title: "10" }
             ]
         };
             
@@ -372,7 +353,6 @@
                         
                         animeItem.innerHTML = `
                             <div class="anime-title">${anime.title}</div>
-                            <div class="anime-type">${anime.type}</div>
                         `;
                         
                         animeItem.addEventListener('click', function() {
@@ -405,11 +385,11 @@
             saveImageBtn.addEventListener('click', function () {
                 document.fonts.ready.then(() => {
                     html2canvas(gridContainer, {
-                        useCORS: true,              // Needed if you're loading images
-                        backgroundColor: null,      // Preserve background as-is
-                        scale: 2,                   // Increase resolution
-                        allowTaint: true,           // Allow cross-origin content
-                        logging: true               // For debugging
+                        useCORS: true,
+                        backgroundColor: null,
+                        scale: 2,
+                        allowTaint: true,
+                        logging: true
                     }).then(canvas => {
                         const link = document.createElement('a');
                         link.download = 'Anime_I_Watched-' + new Date().toISOString().slice(0, 10) + '.png';
