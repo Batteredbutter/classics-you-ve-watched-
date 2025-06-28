@@ -41,7 +41,7 @@
         header {
             text-align: center;
             margin-bottom: 30px;
-            padding: 20px;
+            padding: 5px;
             background: rgba(0, 0, 0, 0.4);
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
@@ -56,7 +56,41 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+ 		
+		.header-content {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 20px;
+			flex-wrap: wrap;
+		}
+
+		.title-container {
+			flex: 1;
+			min-width: 300px;
+		}
+
+        .profile-pic {
+            width: 128px;
+            height: 128px;
+            border-radius: 0%;
+            border: 0px solid #8e2de2;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.0);
+            transition: all 0.3s ease;
+        }
         
+		.profile-pic:hover img {
+			filter: drop-shadow(0 0 8px rgba(198, 154, 119, 0.7)) brightness(1.1);
+			transform: scale(1.05);
+			transition: filter 0.3s ease, transform 0.3s ease;
+		}
+        
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+		       
         .subtitle {
             font-size: 1.2rem;
             opacity: 0.9;
@@ -317,10 +351,21 @@
     <canvas id="emberCanvas"></canvas>
     
     <div class="container">
-        <header>
-            <h1>20 Years of Anime: How Many Have You Seen?</h1>
-            <p class="subtitle">Select how many anime from each year you've finished watching</p>
-        </header>
+		<header>
+			<div class="header-content">
+				<a href="https://anilist.co/user/Batteredbutter/" 
+				   class="profile-pic" 
+				   target="_blank"
+				   title="Batteredbutter's AniList Profile">
+					<img src="https://i.imgur.com/Z5JT0Sa.png" 
+						 alt="Batteredbutter's Profile">
+				</a>
+				<div class="title-container">
+					<h1>20 Years of Anime: How Many Have You Seen?</h1>
+					<p class="subtitle">Select how many anime from each year you've finished watching</p>
+				</div>
+			</div>
+		</header>
         
         <div class="controls">
             <button id="selectAllBtn" class="btn">Select All Anime</button>
@@ -436,7 +481,7 @@
                     { title: "Fate/Zero" },
                     { title: "GOSICK" },
                     { title: "Guilty Crown" },
-                    { title: "HUNTER x HUNTER" },
+                    { title: "HUNTER\nx\nHUNTER" },
                     { title: "Nichijou" },
                     { title: "Puella Magi Madoka Magica" },
                     { title: "Steins;Gate" },
@@ -535,7 +580,7 @@
                     { title: "Given " },
                     { title: "Kaguya-sama: Love is War" },
                     { title: "Machikado Mazoku" },
-                    { title: "The Promised Neverland" }, // Note: duplicate
+                    { title: "The Promised Neverland" },
                     { title: "Vinland Saga" }
                 ],
                 2020: [
