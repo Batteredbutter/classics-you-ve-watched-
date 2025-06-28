@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime I've Watched</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(to right, #4a00e0, #8e2de2);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        .btn-save {
+            background: linear-gradient(to right, #00b09b, #96c93d);
+        }
+        
+        .grid-container {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+        
+        .year-row {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .year-label {
+            min-width: 80px;
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            background: rgba(106, 27, 154, 0.7);
+            padding: 10px 5px;
+            border-radius: 5px;
+            margin-right: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .anime-grid {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+        
+        .anime-item {
+            width: 90px;
+            height: 90px;
+            background: rgba(40, 40, 80, 0.9);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            padding: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border: 2px solid #4a148c;
+        }
+        
+        .anime-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            background: rgba(50, 50, 100, 0.95);
+        }
+        
+        .anime-item.checked {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            border-color: #1e8449;
+        }
+        
+        .anime-item.checked::after {
+            content: "✓";
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #27ae60;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .anime-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            line-height: 1.2;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+        }
+        
+        .anime-type {
+            font-size: 0.65rem;
+            opacity: 0.8;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+        
+        .instructions {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .year-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .year-label {
+                margin-bottom: 10px;
+            }
+            
+            .anime-grid {
+                width: 100%;
+            }
+            
+            .anime-item {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Anime I've Watched</h1>
+            <p class="subtitle">Select how many anime from each year starting in 2006 you’ve watched.</p>
+            <p class="subtitle"></p>Each year features a curated list of ten must-see titles.</p>
+                Discover how many classics you've watched!
+            </p>
+        </header>
+        
+        <div class="controls">
+            <button id="selectAllBtn" class="btn">Select All Anime</button>
+            <button id="deselectAllBtn" class="btn">Deselect All Anime</button>
+            <button id="saveImageBtn" class="btn btn-save">Save as Image</button>
+        </div>
+        
+        <div class="grid-container" id="gridContainer">
+            <!-- Anime grid will be generated here -->
+        </div>
+        
+        <footer>
+            <p>Created with ❤️ for anime fans and Anillist Users</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const gridContainer = document.getElementById('gridContainer');
+            const selectAllBtn = document.getElementById('selectAllBtn');
+            const deselectAllBtn = document.getElementById('deselectAllBtn');
+            const saveImageBtn = document.getElementById('saveImageBtn');
+            
+            // Sample anime data (2006-2024)
+        const animeData = {
+            2006: [
+                { title: "1", type: "1" },
+                { title: "2", type: "2" },
+                { title: "3", type: "3" },
+                { title: "4", type: "4" },
+                { title: "5", type: "5" },
+                { title: "6", type: "6" },
+                { title: "7", type: "7" },
+                { title: "8", type: "8" },
+                { title: "9", type: "9" },
+                { title: "10", type: "10" }
+            ],
+            2007: [
+                { title: "1", type: "1" },
+                { title: "2", type: "2" },
+                { title: "3", type: "3" },
+                { title: "4", type: "4" },
+                { title: "5", type: "5" },
+                { title: "6", type: "6" },
+                { title: "7", type: "7" },
+                { title: "8", type: "8" },
+                { title: "9", type: "9" },
+                { title: "10", type: "10" }
+            ],
+            2008: [
+                { title: "1", type: "1" },
+                { title: "2", type: "2" },
+                { title: "3", type: "3" },
+                { title: "4", type: "4" },
+                { title: "5", type: "5" },
+                { title: "6", type: "6" },
+                { title: "7", type: "7" },
+                { title: "8", type: "8" },
+                { title: "9", type: "9" },
+                { title: "10", type: "10" }
+            ],
+            2009: [
+                { title: "1", type: "1" },
+                { title: "2", type: "2" },
+                { title: "3", type: "3" },
+                { title: "4", type: "4" },
+                { title: "5", type: "5" },
+                { title: "6", type: "6" },
+                { title: "7", type: "7" },
+                { title: "8", type: "8" },
+                { title: "9", type: "9" },
+                { title: "10", type: "10" }
+            ],
+            2010: [
+                { title: "1", type: "1" },
+                { title: "2", type: "2" },
+                { title: "3", type: "3" },
+                { title: "4", type: "4" },
+                { title: "5", type: "5" },
+                { title: "6", type: "6" },
+                { title: "7", type: "7" },
+                { title: "8", type: "8" },
+                { title: "9", type: "9" },
+                { title: "10", type: "10" }
+            ],
+            2011: [
+                { title: "1", type: "1" },
+                { title: "2", type: "2" },
+                { title: "3", type: "3" },
+                { title: "4", type: "4" },
+                { title: "5", type: "5" },
+                { title: "6", type: "6" },
+                { title: "7", type: "7" },
+                { title: "8", type: "8" },
+                { title: "9", type: "9" },
+                { title: "10", type: "10" }
+            ]
+        };
+            
+            // Generate the anime grid
+            function generateAnimeGrid() {
+                gridContainer.innerHTML = '';
+                
+                for (let year = 2006; year <= 2024; year++) {
+                    const yearRow = document.createElement('div');
+                    yearRow.className = 'year-row';
+                    
+                    const yearLabel = document.createElement('div');
+                    yearLabel.className = 'year-label';
+                    yearLabel.textContent = year;
+                    yearRow.appendChild(yearLabel);
+                    
+                    const animeGrid = document.createElement('div');
+                    animeGrid.className = 'anime-grid';
+                    
+                    animeData[year].forEach((anime, index) => {
+                        const animeItem = document.createElement('div');
+                        animeItem.className = 'anime-item';
+                        animeItem.dataset.year = year;
+                        animeItem.dataset.index = index;
+                        
+                        animeItem.innerHTML = `
+                            <div class="anime-title">${anime.title}</div>
+                            <div class="anime-type">${anime.type}</div>
+                        `;
+                        
+                        animeItem.addEventListener('click', function() {
+                            this.classList.toggle('checked');
+                        });
+                        
+                        animeGrid.appendChild(animeItem);
+                    });
+                    
+                    yearRow.appendChild(animeGrid);
+                    gridContainer.appendChild(yearRow);
+                }
+            }
+            
+            // Select all anime
+            selectAllBtn.addEventListener('click', function() {
+                document.querySelectorAll('.anime-item').forEach(item => {
+                    item.classList.add('checked');
+                });
+            });
+            
+            // Deselect all anime
+            deselectAllBtn.addEventListener('click', function() {
+                document.querySelectorAll('.anime-item').forEach(item => {
+                    item.classList.remove('checked');
+                });
+            });
+            
+            // Save as image
+            saveImageBtn.addEventListener('click', function () {
+                document.fonts.ready.then(() => {
+                    html2canvas(gridContainer, {
+                        useCORS: true,              // Needed if you're loading images
+                        backgroundColor: null,      // Preserve background as-is
+                        scale: 2,                   // Increase resolution
+                        allowTaint: true,           // Allow cross-origin content
+                        logging: true               // For debugging
+                    }).then(canvas => {
+                        const link = document.createElement('a');
+                        link.download = 'anime-tracker-' + new Date().toISOString().slice(0, 10) + '.png';
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                    });
+                });
+            });
+            
+            // Initialize the grid
+            generateAnimeGrid();
+        });
+    </script>
+</body>
+</html>
