@@ -412,7 +412,7 @@
                         logging: true               // For debugging
                     }).then(canvas => {
                         const link = document.createElement('a');
-                        link.download = 'anime-tracker-' + new Date().toISOString().slice(0, 10) + '.png';
+                        link.download = 'Anime_I_Watched-' + new Date().toISOString().slice(0, 10) + '.png';
                         link.href = canvas.toDataURL('image/png');
                         link.click();
                     });
