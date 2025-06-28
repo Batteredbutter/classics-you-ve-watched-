@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime I've Watched</title>
+    <title>Anime I've Watched - Enhanced</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         * {
@@ -14,16 +14,28 @@
         }
         
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
             color: #fff;
             min-height: 100vh;
             padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        #emberCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
         }
         
         .container {
             max-width: 1787px;
             margin: 0 auto;
             padding: 20px;
+            position: relative;
         }
         
         header {
@@ -33,6 +45,7 @@
             background: rgba(0, 0, 0, 0.4);
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
         }
         
         h1 {
@@ -86,6 +99,83 @@
             background: linear-gradient(to right, #00b09b, #96c93d);
         }
         
+        /* Progress Section */
+        .progress-section {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            margin-bottom: 30px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .progress-text {
+            font-size: 1.4rem;
+            font-weight: bold;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            flex: 1;
+            min-width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .progress-stats {
+            font-size: 1.2rem;
+            color: #feb47b;
+            text-align: center;
+            min-width: 100%;
+        }
+        
+        .progress-container {
+            height: 30px;
+            background: rgba(40, 40, 80, 0.7);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, #4a00e0, #8e2de2);
+            border-radius: 15px;
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-bar::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                        transparent, 
+                        rgba(255,255,255,0.2), 
+                        transparent);
+            animation: shimmer 2s infinite linear;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Grid Container */
         .grid-container {
             background: rgba(20, 20, 40, 0.7);
             border-radius: 10px;
@@ -93,6 +183,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
             margin-bottom: 30px;
             overflow-x: auto;
+            backdrop-filter: blur(5px);
         }
         
         .year-row {
@@ -150,23 +241,16 @@
             border-color: #1e8449;
         }
         
- /*       .anime-item.checked::after {
-            content: "✓";
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #27ae60;
-            color: white;
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.3);
+        .anime-item.placeholder {
+            background: rgba(60, 60, 80, 0.5);
+            cursor: not-allowed;
+            opacity: 0.5;
         }
-   */     
+        
+        .anime-item.placeholder .anime-title {
+            color: #aaa;
+        }
+        
         .anime-title {
             font-size: 1.0rem;
             font-weight: 600;
@@ -182,24 +266,15 @@
             opacity: 0.8;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 10px;
+            backdrop-filter: blur(5px);
         }
         
-        .instructions {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-        
-        .instructions ul {
-            padding-left: 20px;
-            margin-top: 10px;
-        }
-        
-        .instructions li {
-            margin-bottom: 8px;
+        .save-container {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
         }
         
         /* Responsive design */
@@ -235,12 +310,13 @@
     </style>
 </head>
 <body>
+    <canvas id="emberCanvas"></canvas>
+    
     <div class="container">
         <header>
             <h1>Anime I've Watched</h1>
-            <p class="subtitle">Select how many anime from each year starting in 2006 you’ve watched.</p>
-            <p class="subtitle">Each year features a curated list of ten must-see titles.</p>
-            <p class="subtitle">Discover how many classics you've watched!</p>
+            <p class="subtitle">Select how many anime from each year you’ve watched. Placeholder titles (0000) are not counted.</p>
+            <p class="subtitle">Track your progress and share your anime journey!</p>
         </header>
         
         <div class="controls">
@@ -248,13 +324,27 @@
             <button id="deselectAllBtn" class="btn">Deselect All Anime</button>
             <button id="saveImageBtn" class="btn btn-save">Save as Image</button>
         </div>
+        
+        <div class="progress-section" id="progressSection">
+            <div class="progress-header">
+                <div class="progress-text" id="progressText">Begin your anime journey!</div>
+                <div class="progress-stats" id="progressStats">0 of 0 completed</div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
          
         <div class="grid-container" id="gridContainer">
             <!-- Anime grid will be generated here -->
         </div>
         
+        <div class="save-container">
+            <p><strong>Save Note:</strong> Only the progress bar and anime grid will be captured in the saved image.</p>
+        </div>
+        
         <footer>
-            <p>Created with ❤️ for anime fans and AniList Users</p>
+            <p>Created with ❤️ for anime fans | Floating embers background effect | Progress tracking</p>
         </footer>
     </div>
 
@@ -264,172 +354,260 @@
             const selectAllBtn = document.getElementById('selectAllBtn');
             const deselectAllBtn = document.getElementById('deselectAllBtn');
             const saveImageBtn = document.getElementById('saveImageBtn');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const progressStats = document.getElementById('progressStats');
+            const progressSection = document.getElementById('progressSection');
+            
+            // Progress messages at 20% intervals
+            const progressMessages = [
+                { percent: 0, text: "Begin your anime journey!" },
+                { percent: 20, text: "Getting started! Keep watching!" },
+                { percent: 40, text: "Making good progress! Halfway there!" },
+                { percent: 60, text: "More than halfway! You're doing great!" },
+                { percent: 80, text: "Almost there! Just a little more!" },
+                { percent: 100, text: "Amazing! You've completed all available anime!" }
+            ];
             
             // Anime data with numbered titles only (2006-2024)
-        const animeData = {
-			2006: [
-				{ title: "Code Geass" },
-				{ title: "D.Gray-man" },
-				{ title: "Death Note" },
-				{ title: " Ergo Proxy" },
-				{ title: "Gintama" },
-				{ title: "The Melancholy of Haruhi Suzumiya" },
-				{ title: "Higurashi" },
-				{ title: "NANA" },
-				{ title: "The Familiar of Zero" },
-				{ title: "Welcome to the NHK" }
-			],
-			2007: [
-				{ title: "Baccano!" },
-				{ title: "CLANNAD" },
-				{ title: "DARKER THAN BLACK" },
-				{ title: "Dennou Coil" },
-				{ title: "Gurren Lagann" },
-				{ title: "Kaiji Ultimate Survivor" },
-				{ title: "Lovely Complex" },
-				{ title: "Mononoke" },
-				{ title: "ef: a tale of memories." },
-				{ title: "Nodame Cantabile" }
-			],
-            2008: [
-                { title: "Natsume's Book of Friends" },
-                { title: "Ookami to Koushinryou" },
-                { title: "Toradora!" },
-                { title: "xxxHOLiC-Kei" },
-                { title: "Kaiba" },
-                { title: "Black Butler" },
-                { title: "A Certain Magical Index" },
-                { title: "Minami-ke" },
-                { title: "00" },
-                { title: "00" }
-            ],
-            2009: [
-                { title: "Fullmetal Alchemist: Brotherhood" },
-                { title: "Bakemonogatari" },
-                { title: " K-ON!" },
-                { title: "A Certain Scientific Railgun" },
-                { title: " Tokyo Magnitude 8.0" },
-                { title: "Kobato" },
-                { title: "Kimi ni Todoke" },
-                { title: "Cross Game" },
-                { title: "9" },
-                { title: "10" }
-            ],
-            2010: [
-                { title: "The Tatami Galaxy" },
-                { title: "Katanagatari" },
-                { title: " Angel Beats!" },
-                { title: "Sound of the Sky" },
-                { title: " Durarara!!" },
-                { title: "00" },
-                { title: "00" },
-                { title: "00" },
-                { title: "00" },
-                { title: "00" }
-            ],
-            2011: [
-                { title: "Steins;Gate" },
-                { title: "HUNTER HUNTER" },
-                { title: "Puella Magi Madoka Magica" },
-                { title: "Nichijou" },
-                { title: "Chihayafuru" },
-                { title: "Fate/Zero" },
-                { title: "THE IDOLM@STER" },
-                { title: "AnoHana" },
-                { title: "GOSICK" },
-                { title: " Guilty Crown" }
-            ],
-            2012: [
-                { title: "The Pet Girl of Sakurasou" },
-                { title: "Hyouka" },
-                { title: "JoJo's Bizarre Adventure" },
-                { title: "Love, Chunibyo & Other Delusions" },
-                { title: "Girls und Panzer" },
-                { title: "Another" },
-                { title: "Sword Art Online" },
-                { title: "From the New World" },
-                { title: " PSYCHOPASS" },
-                { title: " Kokoro Connect" }
-            ],
-            2013: [
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" }
-            ],
-            2014: [
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" }
-            ],
-            2015: [
-                { title: "Hibike! Euphonium" },
-                { title: "Food Wars!" },
-                { title: "00" },
-                { title: "00" },
-                { title: "00" },
-                { title: "00" },
-                { title: "00" },
-                { title: "00" },
-                { title: "00" },
-                { title: "00" }
-            ],
-            2016: [
-                { title: "Re:Zero" },
-                { title: "March comes in like a lion" },
-                { title: "ERASED" },
-                { title: "Mob Psycho 100" },
-                { title: "Konosuba" },
-                { title: "Bungou Stray Dogs" },
-                { title: "00" },
-                { title: "00" },
-                { title: "00" },
-                { title: "00" }
-            ],
-            2017: [
-                { title: "Made in Abyss" },
-                { title: "Girls' Last Tour" },
-                { title: "Little Witch Academia" },
-                { title: "Land of the Lustrous" },
-                { title: "The Ancient Magus’ Bride" },
-                { title: "Miss Kobayashi's Dragon Maid" },
-                { title: "Black Clover" },
-                { title: "Kakegurui" },
-                { title: "Princess Principal" },
-                { title: " Youjo Senki" }
-            ],
-            2018: [
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" },
-                { title: "0" }
-            ]
-        };
+            const animeData = {
+                2006: [
+                    { title: "Code Geass" },
+                    { title: "D.Gray-man" },
+                    { title: "Death Note" },
+                    { title: "Ergo Proxy" },
+                    { title: "Gintama" },
+                    { title: "The Melancholy of Haruhi Suzumiya" },
+                    { title: "Higurashi" },
+                    { title: "NANA" },
+                    { title: "The Familiar of Zero" },
+                    { title: "Welcome to the NHK" }
+                ],
+                2007: [
+                    { title: "Baccano!" },
+                    { title: "CLANNAD" },
+                    { title: "DARKER THAN BLACK" },
+                    { title: "Dennou Coil" },
+                    { title: "Gurren Lagann" },
+                    { title: "Kaiji Ultimate Survivor" },
+                    { title: "Lovely Complex" },
+                    { title: "Mononoke" },
+                    { title: "ef: a tale of memories." },
+                    { title: "Nodame Cantabile" }
+                ],
+                2008: [
+                    { title: "Natsume's Book of Friends" },
+                    { title: "Ookami to Koushinryou" },
+                    { title: "Toradora!" },
+                    { title: "xxxHOLiC-Kei" },
+                    { title: "Kaiba" },
+                    { title: "Black Butler" },
+                    { title: "A Certain Magical Index" },
+                    { title: "Minami-ke" },
+                    { title: "0000" },
+                    { title: "0000" }
+                ],
+                2009: [
+                    { title: "Fullmetal Alchemist: Brotherhood" },
+                    { title: "Bakemonogatari" },
+                    { title: "K-ON!" },
+                    { title: "A Certain Scientific Railgun" },
+                    { title: "Tokyo Magnitude 8.0" },
+                    { title: "Kobato" },
+                    { title: "Kimi ni Todoke" },
+                    { title: "Cross Game" },
+                    { title: "0000" },
+                    { title: "0000" }
+                ],
+                2010: [
+                    { title: "The Tatami Galaxy" },
+                    { title: "Katanagatari" },
+                    { title: "Angel Beats!" },
+                    { title: "Sound of the Sky" },
+                    { title: "Durarara!!" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" }
+                ],
+                2011: [
+                    { title: "Steins;Gate" },
+                    { title: "HUNTER HUNTER" },
+                    { title: "Puella Magi Madoka Magica" },
+                    { title: "Nichijou" },
+                    { title: "Chihayafuru" },
+                    { title: "Fate/Zero" },
+                    { title: "THE IDOLM@STER" },
+                    { title: "AnoHana" },
+                    { title: "GOSICK" },
+                    { title: "Guilty Crown" }
+                ],
+                2012: [
+                    { title: "The Pet Girl of Sakurasou" },
+                    { title: "Hyouka" },
+                    { title: "JoJo's Bizarre Adventure" },
+                    { title: "Love, Chunibyo & Other Delusions" },
+                    { title: "Girls und Panzer" },
+                    { title: "Another" },
+                    { title: "Sword Art Online" },
+                    { title: "From the New World" },
+                    { title: "PSYCHOPASS" },
+                    { title: "Kokoro Connect" }
+                ],
+                2013: [
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" }
+                ],
+                2014: [
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" }
+                ],
+                2015: [
+                    { title: "Hibike! Euphonium" },
+                    { title: "Food Wars!" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" }
+                ],
+                2016: [
+                    { title: "Re:Zero" },
+                    { title: "March comes in like a lion" },
+                    { title: "ERASED" },
+                    { title: "Mob Psycho 100" },
+                    { title: "Konosuba" },
+                    { title: "Bungou Stray Dogs" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" }
+                ],
+                2017: [
+                    { title: "Made in Abyss" },
+                    { title: "Girls' Last Tour" },
+                    { title: "Little Witch Academia" },
+                    { title: "Land of the Lustrous" },
+                    { title: "The Ancient Magus’ Bride" },
+                    { title: "Miss Kobayashi's Dragon Maid" },
+                    { title: "Black Clover" },
+                    { title: "Kakegurui" },
+                    { title: "Princess Principal" },
+                    { title: "Youjo Senki" }
+                ],
+                2018: [
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" }
+                ],
+                2019: [
+                    { title: "Demon Slayer" },
+                    { title: "Vinland Saga" },
+                    { title: "The Promised Neverland" },
+                    { title: "Dr. Stone" },
+                    { title: "Fire Force" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" }
+                ],
+                2020: [
+                    { title: "Jujutsu Kaisen" },
+                    { title: "Tower of God" },
+                    { title: "Re:Zero Season 2" },
+                    { title: "Haikyuu!! To The Top" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" }
+                ],
+                2021: [
+                    { title: "Attack on Titan: Final Season" },
+                    { title: "Mushoku Tensei" },
+                    { title: "Tokyo Revengers" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" }
+                ],
+                2022: [
+                    { title: "Spy x Family" },
+                    { title: "Chainsaw Man" },
+                    { title: "Bleach: Thousand-Year Blood War" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" }
+                ],
+                2023: [
+                    { title: "Oshi no Ko" },
+                    { title: "Jujutsu Kaisen Season 2" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" }
+                ],
+                2024: [
+                    { title: "Demon Slayer: Hashira Training Arc" },
+                    { title: "My Hero Academia Season 7" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" },
+                    { title: "0000" }
+                ]
+            };
             
             // Generate the anime grid
             function generateAnimeGrid() {
                 gridContainer.innerHTML = '';
                 
                 for (let year = 2006; year <= 2024; year++) {
+                    if (!animeData[year]) continue;
+                    
                     const yearRow = document.createElement('div');
                     yearRow.className = 'year-row';
                     
@@ -447,13 +625,22 @@
                         animeItem.dataset.year = year;
                         animeItem.dataset.index = index;
                         
+                        // Check if it's a placeholder
+                        if (/^0+$/.test(anime.title)) {
+                            animeItem.classList.add('placeholder');
+                        }
+                        
                         animeItem.innerHTML = `
                             <div class="anime-title">${anime.title}</div>
                         `;
                         
-                        animeItem.addEventListener('click', function() {
-                            this.classList.toggle('checked');
-                        });
+                        // Only add click event for non-placeholders
+                        if (!animeItem.classList.contains('placeholder')) {
+                            animeItem.addEventListener('click', function() {
+                                this.classList.toggle('checked');
+                                updateProgress();
+                            });
+                        }
                         
                         animeGrid.appendChild(animeItem);
                     });
@@ -461,42 +648,194 @@
                     yearRow.appendChild(animeGrid);
                     gridContainer.appendChild(yearRow);
                 }
+                
+                // Initialize progress after generating grid
+                updateProgress();
             }
             
-            // Select all anime
-            selectAllBtn.addEventListener('click', function() {
-                document.querySelectorAll('.anime-item').forEach(item => {
+            // Calculate total non-placeholder anime
+            function calculateTotalAnime() {
+                let total = 0;
+                for (let year in animeData) {
+                    total += animeData[year].filter(anime => !/^0+$/.test(anime.title)).length;
+                }
+                return total;
+            }
+            
+            // Calculate completed anime
+            function calculateCompleted() {
+                return document.querySelectorAll('.anime-item.checked:not(.placeholder)').length;
+            }
+            
+            // Update progress bar and text
+            function updateProgress() {
+                const total = calculateTotalAnime();
+                const completed = calculateCompleted();
+                const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+                
+                // Update progress bar
+                progressBar.style.width = `${percentage}%`;
+                
+                // Update stats text
+                progressStats.textContent = `${completed} of ${total} completed (${percentage}%)`;
+                
+                // Find the appropriate message based on percentage
+                let message = progressMessages[0].text;
+                for (let i = progressMessages.length - 1; i >= 0; i--) {
+                    if (percentage >= progressMessages[i].percent) {
+                        message = progressMessages[i].text;
+                        break;
+                    }
+                }
+                progressText.textContent = message;
+            }
+            
+            // Select all non-placeholder anime
+            function selectAllAnime() {
+                document.querySelectorAll('.anime-item:not(.placeholder)').forEach(item => {
                     item.classList.add('checked');
                 });
-            });
+                updateProgress();
+            }
             
             // Deselect all anime
-            deselectAllBtn.addEventListener('click', function() {
+            function deselectAllAnime() {
                 document.querySelectorAll('.anime-item').forEach(item => {
                     item.classList.remove('checked');
                 });
-            });
+                updateProgress();
+            }
             
             // Save as image
-            saveImageBtn.addEventListener('click', function () {
-                document.fonts.ready.then(() => {
-                    html2canvas(gridContainer, {
-                        useCORS: true,
-                        backgroundColor: null,
-                        scale: 2,
-                        allowTaint: true,
-                        logging: true
-                    }).then(canvas => {
-                        const link = document.createElement('a');
-                        link.download = 'Anime_I_Watched-' + new Date().toISOString().slice(0, 10) + '.png';
-                        link.href = canvas.toDataURL('image/png');
-                        link.click();
-                    });
+            function saveAsImage() {
+                // Create a container for capture
+                const captureContainer = document.createElement('div');
+                captureContainer.style.padding = '20px';
+                captureContainer.style.background = 'rgba(20, 20, 40, 0.9)';
+                captureContainer.style.borderRadius = '10px';
+                
+                // Clone the elements we want to capture
+                const progressClone = progressSection.cloneNode(true);
+                const gridClone = gridContainer.cloneNode(true);
+                
+                // Add them to the capture container
+                captureContainer.appendChild(progressClone);
+                captureContainer.appendChild(gridClone);
+                
+                // Add to document (off-screen)
+                captureContainer.style.position = 'fixed';
+                captureContainer.style.left = '-9999px';
+                document.body.appendChild(captureContainer);
+                
+                // Use html2canvas to capture
+                html2canvas(captureContainer, {
+                    useCORS: true,
+                    backgroundColor: null,
+                    scale: 2,
+                    allowTaint: true
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'Anime-Progress-' + new Date().toISOString().slice(0, 10) + '.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    
+                    // Clean up
+                    document.body.removeChild(captureContainer);
                 });
-            });
+            }
             
-            // Initialize the grid
+            // Flying Ember Effect
+            function initEmberEffect() {
+                const canvas = document.getElementById('emberCanvas');
+                const ctx = canvas.getContext('2d');
+                let particles = [];
+                
+                // Set canvas dimensions
+                function resizeCanvas() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                }
+                
+                window.addEventListener('resize', resizeCanvas);
+                resizeCanvas();
+                
+                // Particle class
+                class Particle {
+                    constructor() {
+                        this.reset();
+                    }
+                    
+                    reset() {
+                        this.x = Math.random() * canvas.width;
+                        this.y = canvas.height + 10;
+                        this.size = Math.random() * 3 + 1;
+                        this.speedX = Math.random() * 1 - 0.5;
+                        this.speedY = Math.random() * -3 - 1;
+                        this.color = `hsl(${Math.random() * 20 + 10}, 100%, ${Math.random() * 30 + 50}%)`;
+                        this.alpha = Math.random() * 0.5 + 0.3;
+                        this.life = 100;
+                    }
+                    
+                    update() {
+                        this.x += this.speedX;
+                        this.y += this.speedY;
+                        this.alpha -= 0.003;
+                        this.life--;
+                        
+                        if (this.y < -10 || this.alpha <= 0 || this.life <= 0) {
+                            this.reset();
+                        }
+                    }
+                    
+                    draw() {
+                        ctx.save();
+                        ctx.globalAlpha = this.alpha;
+                        ctx.fillStyle = this.color;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.restore();
+                    }
+                }
+                
+                // Create particles
+                for (let i = 0; i < 100; i++) {
+                    particles.push(new Particle());
+                }
+                
+                // Animation loop
+                function animate() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Add subtle background gradient
+                    const gradient = ctx.createRadialGradient(
+                        canvas.width/2, canvas.height/2, 0,
+                        canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height)/2
+                    );
+                    gradient.addColorStop(0, 'rgba(26, 42, 108, 0.2)');
+                    gradient.addColorStop(1, 'rgba(26, 26, 46, 0.5)');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    particles.forEach(particle => {
+                        particle.update();
+                        particle.draw();
+                    });
+                    
+                    requestAnimationFrame(animate);
+                }
+                
+                animate();
+            }
+            
+            // Event listeners
+            selectAllBtn.addEventListener('click', selectAllAnime);
+            deselectAllBtn.addEventListener('click', deselectAllAnime);
+            saveImageBtn.addEventListener('click', saveAsImage);
+            
+            // Initialize the app
             generateAnimeGrid();
+            initEmberEffect();
         });
     </script>
 </body>
