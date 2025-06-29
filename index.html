@@ -417,7 +417,7 @@
 		     { percent: 100, text: "Anime God" }
             ];
             
-            // Anime data with numbered titles only (2006-2024)
+            // Anime data with numbered titles only (2005-2024)
             const animeData = {
                 2005: [
 		    { title: "Akagi" },
@@ -661,11 +661,15 @@
                 ]
             };
             
+            // Storage key for user selections
+            const STORAGE_KEY = 'animeProgressSelections';
+            
             // Generate the anime grid
             function generateAnimeGrid() {
                 gridContainer.innerHTML = '';
                 
-                for (let year = 2006; year <= 2024; year++) {
+                // Generate from 2005 to 2024
+                for (let year = 2005; year <= 2024; year++) {
                     if (!animeData[year]) continue;
                     
                     const yearRow = document.createElement('div');
@@ -698,6 +702,7 @@
                         if (!animeItem.classList.contains('placeholder')) {
                             animeItem.addEventListener('click', function() {
                                 this.classList.toggle('checked');
+                                saveSelections();
                                 updateProgress();
                             });
                         }
@@ -709,8 +714,55 @@
                     gridContainer.appendChild(yearRow);
                 }
                 
+                // Load saved selections
+                loadSelections();
+                
                 // Initialize progress after generating grid
                 updateProgress();
+            }
+            
+            // Save user selections to localStorage
+            function saveSelections() {
+                const selections = {};
+                
+                // Collect all checked anime items
+                document.querySelectorAll('.anime-item.checked:not(.placeholder)').forEach(item => {
+                    const year = item.dataset.year;
+                    const index = parseInt(item.dataset.index);
+                    
+                    if (!selections[year]) {
+                        selections[year] = [];
+                    }
+                    
+                    if (!selections[year].includes(index)) {
+                        selections[year].push(index);
+                    }
+                });
+                
+                // Save to localStorage
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(selections));
+            }
+            
+            // Load selections from localStorage
+            function loadSelections() {
+                const savedSelections = localStorage.getItem(STORAGE_KEY);
+                if (!savedSelections) return;
+                
+                try {
+                    const selections = JSON.parse(savedSelections);
+                    
+                    for (const year in selections) {
+                        selections[year].forEach(index => {
+                            const selector = `.anime-item[data-year="${year}"][data-index="${index}"]`;
+                            const element = document.querySelector(selector);
+                            if (element) {
+                                element.classList.add('checked');
+                            }
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error loading selections:', e);
+                }
             }
             
             // Calculate total non-placeholder anime
@@ -755,6 +807,7 @@
                 document.querySelectorAll('.anime-item:not(.placeholder)').forEach(item => {
                     item.classList.add('checked');
                 });
+                saveSelections();
                 updateProgress();
             }
             
@@ -763,6 +816,7 @@
                 document.querySelectorAll('.anime-item').forEach(item => {
                     item.classList.remove('checked');
                 });
+                saveSelections();
                 updateProgress();
             }
             
